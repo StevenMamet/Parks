@@ -1,3 +1,9 @@
+# This script will read in the Wapusk microclimate, snow, and needle data
+# and run some simple analyses for the the year-end report
+
+# Libraries ----
+rm(list = ls())
+
 library(dplyr)
 library(lubridate)
 library(pscl)
@@ -6,15 +12,17 @@ library(scales)
 library(tidyverse)
 library(wesanderson)
 
-rm(list = ls())
-
+# Set working directory
 setwd("~/Desktop/Workspace/")
 
 #__________________________________-----
 # Microclimate ----
+
+## Read in the data ----
 ch <- read.csv("./Earthwatch/Churchill/data/microclimate_20000101_20221010_filled.csv", header = T)[-1]
 
-# Format date, add in cool/warm seasons, season_year
+## Data wrangling ----
+### Format date, add seasons/season_year ----
 ch <- ch %>% 
   mutate(Date = ymd(Date), 
          season_year = ifelse(month(Date) == 10 | month(Date) == 11 | month(Date) == 12,
@@ -30,11 +38,10 @@ ch_temps_season <- ch %>%
                                "bwp150","ppa150","ppd150","tun150","rlk150",
                                "airp0","bsw0","tis0","wsu0","mlk0","fen0","bfr0","pfr0",
                                "bwp0","ppa0","ppd0","tun0","rlk0", # No ground surface for RLK
-                               "neg80")), ~ mean(.x, na.rm = TRUE)))
-
-ch_temps_season <- ch_temps_season %>% 
+                               "neg80")), ~ mean(.x, na.rm = TRUE))) %>% 
   select(season_year, season, mlk150, mlkneg80, rlk150, rlkneg80)
 
+### Subsets ----
 ch_temps_w <- subset(ch_temps_season, season == "warm")
 ch_temps_c <- subset(ch_temps_season, season == "cool")
 matplot(ch_temps_w[,-c(1,2)], type = "l")
@@ -55,14 +62,15 @@ ch_annual %>%
 ch_annual %>% 
   ggplot(aes(x = Year, y = mean150)) + geom_line()
 
-## Air temperature regressions
+### Regressions ----
+#### Air ----
 summary(mlk150w <- lm(mlk150 ~ season_year, data = ch_temps_w[-c(1,23),]))     # ns
 summary(rlk150w <- lm(rlk150 ~ season_year, data = ch_temps_w[-c(1,23),]))     # ns
 
 summary(mlk150c <- lm(mlk150 ~ season_year, data = ch_temps_c[-c(1,22),]))     # ns
 summary(rlk150c <- lm(rlk150 ~ season_year, data = ch_temps_c[-c(1,22),]))     # ns
 
-## Permafrost regressions
+#### Permafrost ----
 summary(mlkneg80w <- lm(mlkneg80 ~ season_year, data = ch_temps_w[-c(1,23),]))     # ns
 summary(rlkneg80w <- lm(rlkneg80 ~ season_year, data = ch_temps_w[-c(1,23),]))     # SIG
 
@@ -87,6 +95,138 @@ ch_temps_c %>%
   filter(season_year < 2022) %>% 
   ggplot(aes(x = season_year, y = mlkneg80)) + geom_line() + 
   geom_line(aes(y = rlkneg80), color = "blue")
+
+#__________________________________-----
+# Snow ----
+
+## Read in the data ----
+snow <- read.csv("~/Desktop/Workspace/Parks/data/parks_snow_2006_2023.csv")
+
+## Data wrangling ----
+# [1] "forest"  "beach"   "fen"     "shrub"   "wedge"   "polygon" "island" 
+snow %>% 
+  # filter(type == "forest") %>% 
+  ggplot(aes(x = factor(year), y = depth)) +
+  geom_boxplot() + 
+  facet_wrap(~type, scale="free")
+
+### Mean depth (all years != t) ----
+snow_mean <- snow %>% 
+  filter(year != 2023) %>% 
+  group_by(type) %>% 
+  reframe(mean = mean(depth, na.rm = T))
+
+# # A tibble: 7 × 2
+# type        mean
+# <chr>       <dbl>
+# 1 beach     17.6 
+# 2 fen       41.6 
+# 3 forest    63.4 
+# 4 island    94.6 
+# 5 polygon   9.03
+# 6 shrub     85.8 
+# 7 wedge     35.2 
+
+### Mean depth (year == t) ----
+snow_2023 <- snow %>% 
+  filter(year == 2023) %>% 
+  group_by(type) %>% 
+  reframe(mean = mean(depth, na.rm = T))
+
+# # A tibble: 7 × 2
+# type        mean
+# <chr>       <dbl>
+# 1 beach     31.8 
+# 2 fen       45.0 
+# 3 forest    78.0 
+# 4 island    141.  
+# 5 polygon   7.52
+# 6 shrub     90.5 
+# 7 wedge     30.8 
+
+### Join global and current year mean ----
+df_snow <- snow_mean %>% 
+  left_join(snow_2023, by = "type") %>% 
+  rename(snow_mean = mean.x,
+         snow_2023 = mean.y) %>% 
+  rowwise() %>% 
+  mutate(percent_diff = ((snow_2023 - snow_mean)/snow_mean)*100)
+
+## Stats ----
+### Test (year == t) & control (year != t) datasets ----
+beach_tg <- snow %>% filter(type == "beach", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
+beach_cg <- snow %>% filter(type == "beach", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
+fen_tg <- snow %>% filter(type == "fen", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
+fen_cg <- snow %>% filter(type == "fen", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
+forest_tg <- snow %>% filter(type == "forest", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
+forest_cg <- snow %>% filter(type == "forest", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
+island_tg <- snow %>% filter(type == "island", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
+island_cg <- snow %>% filter(type == "island", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
+polygon_tg <- snow %>% filter(type == "polygon", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
+polygon_cg <- snow %>% filter(type == "polygon", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
+shrub_tg <- snow %>% filter(type == "shrub", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
+shrub_cg <- snow %>% filter(type == "shrub", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
+wedge_tg <- snow %>% filter(type == "wedge", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
+wedge_cg <- snow %>% filter(type == "wedge", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
+
+### Variance tests ----
+var.test(beach_cg, beach_tg)      # hetero
+var.test(fen_cg, fen_tg)          # homo
+var.test(forest_cg, forest_tg)    # hetero
+var.test(island_cg, island_tg)    # hetero
+var.test(polygon_cg, polygon_tg)  # hetero
+var.test(shrub_cg, shrub_tg)      # hetero
+var.test(wedge_cg, wedge_tg)      # hetero
+
+### t-tests ----
+t.test(forest_cg, forest_tg, var.equal = FALSE)     # t = -13.542, df = 157.97, p-value < 2.2e-16
+t.test(island_cg, island_tg, var.equal = FALSE)     # t = -26.55, df = 73.336, p-value < 2.2e-16
+t.test(shrub_cg, shrub_tg, var.equal = FALSE)       # t = -3.3377, df = 42.596, p-value = 0.001761
+t.test(wedge_cg, wedge_tg, var.equal = FALSE)       # t = 3.6751, df = 44.703, p-value = 0.000634
+t.test(beach_cg, beach_tg, var.equal = FALSE)       # t = -4.668, df = 67.03, p-value = 1.506e-05
+t.test(fen_cg, fen_tg, var.equal = TRUE)            # t = -1.5322, df = 1611, p-value = 0.1257
+t.test(polygon_cg, polygon_tg, var.equal = FALSE)   # t = 2.2651, df = 37.458, p-value = 0.02938
+
+#__________________________________-----
+# Needles ----
+
+## Read in the data ----
+needles <- read.csv("~/Desktop/Workspace/Parks/data/parks_needles_2013_2020.csv")
+
+## Data wrangling ----
+### Subset to only parks sites ----
+levels(as.factor(needles$Site))
+needles <- needles %>% 
+  filter(Site %in% c("BR","BRR","BSF","MLK","OR","OSF","RLK")) %>% 
+  mutate(gmin = as.numeric(gmin),
+         Zone = ifelse(Zone == "R","F",Zone)) %>% 
+  filter(Zone == "F")
+
+### Visual inspection ----
+needles %>% 
+  ggplot(aes(x=Aspect, y=gmin, fill=as.factor(year))) +
+  geom_boxplot()
+
+### Percent difference between years & ranks ----
+#### Epidermal conductance ----
+n_df <- needles %>% 
+  group_by(year) %>% 
+  summarise(gmin = mean(gmin, na.rm = T)) %>% 
+  mutate(prop = (gmin - mean(gmin)) / mean(gmin),
+         rank = rank(gmin))
+
+#### Air temperatures ----
+t_df <- ch_temps_w %>% 
+  filter(season_year >= 2013, season_year < 2021) %>% 
+  rowwise() %>% 
+  mutate(mean150 = mean(c(mlk150, rlk150), na.rm = T)) %>% 
+  group_by(season_year) %>% 
+  summarise(mean150 = mean(mean150, na.rm = T)) %>% 
+  mutate(prop = (mean150 - mean(mean150)) / mean(mean150),
+         rank = rank(-mean150))
+
+#__________________________________-----
+# Archived code ----
 
 # ## Export at 6 x 3.5
 # 
@@ -176,119 +316,3 @@ ch_temps_c %>%
 #        col = col_pal2, 
 #        horiz = T, lty = 1, cex = 1, bty = "n", y.intersp = 1, text.width = 2)
 # dev.off()
-
-#***************************************************************
-# Snow ----
-
-snow <- read.csv("~/Desktop/Workspace/Parks/data/parks_snow_2006_2023.csv")
-
-# [1] "forest"  "beach"   "fen"     "shrub"   "wedge"   "polygon" "island" 
-snow %>% 
-  # filter(type == "forest") %>% 
-  ggplot(aes(x = factor(year), y = depth)) +
-  geom_boxplot() + 
-  facet_wrap(~type, scale="free")
-
-snow_mean <- snow %>% 
-  filter(year != 2023) %>% 
-  group_by(type) %>% 
-  reframe(mean = mean(depth, na.rm = T))
-
-# # A tibble: 7 × 2
-# type        mean
-# <chr>       <dbl>
-# 1 beach     17.6 
-# 2 fen       41.6 
-# 3 forest    63.4 
-# 4 island    94.6 
-# 5 polygon   9.03
-# 6 shrub     85.8 
-# 7 wedge     35.2 
-
-snow_2023 <- snow %>% 
-  filter(year == 2023) %>% 
-  group_by(type) %>% 
-  reframe(mean = mean(depth, na.rm = T))
-
-# # A tibble: 7 × 2
-# type        mean
-# <chr>       <dbl>
-# 1 beach     31.8 
-# 2 fen       45.0 
-# 3 forest    78.0 
-# 4 island    141.  
-# 5 polygon   7.52
-# 6 shrub     90.5 
-# 7 wedge     30.8 
-
-df_snow <- snow_mean %>% 
-  left_join(snow_2023, by = "type") %>% 
-  rename(snow_mean = mean.x,
-         snow_2023 = mean.y) %>% 
-  rowwise() %>% 
-  mutate(percent_diff = ((snow_2023 - snow_mean)/snow_mean)*100)
-
-beach_tg <- snow %>% filter(type == "beach", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-beach_cg <- snow %>% filter(type == "beach", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-var.test(beach_cg, beach_tg)  # hetero
-fen_tg <- snow %>% filter(type == "fen", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-fen_cg <- snow %>% filter(type == "fen", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-var.test(fen_cg, fen_tg)  # homo
-forest_tg <- snow %>% filter(type == "forest", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-forest_cg <- snow %>% filter(type == "forest", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-var.test(forest_cg, forest_tg)  # hetero
-island_tg <- snow %>% filter(type == "island", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-island_cg <- snow %>% filter(type == "island", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-var.test(island_cg, island_tg)  # hetero
-polygon_tg <- snow %>% filter(type == "polygon", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-polygon_cg <- snow %>% filter(type == "polygon", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-var.test(polygon_cg, polygon_tg)  # hetero
-shrub_tg <- snow %>% filter(type == "shrub", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-shrub_cg <- snow %>% filter(type == "shrub", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-var.test(shrub_cg, shrub_tg)  # hetero
-wedge_tg <- snow %>% filter(type == "wedge", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-wedge_cg <- snow %>% filter(type == "wedge", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-var.test(wedge_cg, wedge_tg)  # hetero
-
-t.test(forest_cg, forest_tg, var.equal = FALSE) # t = -13.542, df = 157.97, p-value < 2.2e-16
-t.test(island_cg, island_tg, var.equal = FALSE) # t = -26.55, df = 73.336, p-value < 2.2e-16
-t.test(shrub_cg, shrub_tg, var.equal = FALSE) # t = -3.3377, df = 42.596, p-value = 0.001761
-t.test(wedge_cg, wedge_tg, var.equal = FALSE) # t = 3.6751, df = 44.703, p-value = 0.000634
-
-t.test(beach_cg, beach_tg, var.equal = FALSE) # t = -4.668, df = 67.03, p-value = 1.506e-05
-t.test(fen_cg, fen_tg, var.equal = TRUE) # t = -1.5322, df = 1611, p-value = 0.1257
-t.test(polygon_cg, polygon_tg, var.equal = FALSE) # t = 2.2651, df = 37.458, p-value = 0.02938
-
-#***************************************************************
-# Needles ----
-
-needles <- read.csv("~/Desktop/Workspace/Parks/data/parks_needles_2013_2020.csv")
-
-levels(as.factor(needles$Site))
-
-needles <- needles %>% 
-  filter(Site %in% c("BR","BRR","BSF","MLK","OR","OSF","RLK"),) %>% 
-  mutate(gmin = as.numeric(gmin),
-         Zone = ifelse(Zone == "R","F",Zone)) %>% 
-  filter(Zone == "F")
-
-needles %>% 
-  ggplot(aes(x=Aspect, y=gmin, fill=as.factor(year))) +
-  geom_boxplot()
-
-n_df <- needles %>% 
-  group_by(year) %>% 
-  summarise(gmin = mean(gmin, na.rm = T)) %>% 
-  mutate(prop = (gmin - mean(gmin)) / mean(gmin),
-         rank = rank(gmin))
-
-t_df <- ch_temps_w %>% 
-  filter(season_year >= 2013, season_year < 2021) %>% 
-  rowwise() %>% 
-  mutate(mean150 = mean(c(mlk150, rlk150), na.rm = T)) %>% 
-  group_by(season_year) %>% 
-  summarise(mean150 = mean(mean150, na.rm = T)) %>% 
-  mutate(prop = (mean150 - mean(mean150)) / mean(mean150),
-         rank = rank(-mean150))
-
-
