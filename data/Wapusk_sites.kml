@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>Wapusk_sites.kml</name>
+	<StyleMap id="m_ylw-pushpin100">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin60</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl030</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="m_ylw-pushpin111">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin02</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl21</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_ylw-pushpin2">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_ylw-pushpin0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_ylw-pushpin1</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_ylw-pushpin70">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_ylw-pushpin02</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_ylw-pushpin01</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_ylw-pushpin710">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_ylw-pushpin000</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_ylw-pushpin02</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin02">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="s_ylw-pushpin60">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl030">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl21">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="sh_ylw-pushpin01">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="sh_ylw-pushpin02">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="sh_ylw-pushpin1">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="sn_ylw-pushpin0">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="sn_ylw-pushpin000">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="sn_ylw-pushpin02">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Folder>
+		<name>Wapusk</name>
+		<open>1</open>
+		<description>Research sites within Wapusk National Park</description>
+		<Placemark>
+			<name>Mary Lake Weather Station</name>
+			<LookAt>
+				<longitude>-93.16078323670793</longitude>
+				<latitude>57.38473559470383</latitude>
+				<altitude>0</altitude>
+				<heading>1.469109421776295</heading>
+				<tilt>0</tilt>
+				<range>223713.0618529685</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ylw-pushpin2</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-93.39603,58.40198,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Roberge Lake Weather Station</name>
+			<LookAt>
+				<longitude>-93.1144204697748</longitude>
+				<latitude>58.32339411321284</latitude>
+				<altitude>0</altitude>
+				<heading>1.513259171448557</heading>
+				<tilt>0</tilt>
+				<range>223756.1492594794</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ylw-pushpin710</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-93.24227000000002,57.47799000000001,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Broad River Riparian Forest</name>
+			<LookAt>
+				<longitude>-92.87446992804546</longitude>
+				<latitude>58.17354243259235</latitude>
+				<altitude>0</altitude>
+				<heading>1.714239985427307</heading>
+				<tilt>0</tilt>
+				<range>207756.1567189175</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ylw-pushpin70</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-92.96608999999999,58.12008,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Broad River Cabin</name>
+			<LookAt>
+				<longitude>-92.84499272226958</longitude>
+				<latitude>58.12509250157915</latitude>
+				<altitude>0</altitude>
+				<heading>1.748437306099571</heading>
+				<tilt>3.48628069110874</tilt>
+				<range>32748.99980906293</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ylw-pushpin70</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-92.95489999999999,58.12579,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Broad River Shack</name>
+			<LookAt>
+				<longitude>-92.86620037780118</longitude>
+				<latitude>58.13048470291217</latitude>
+				<altitude>0</altitude>
+				<heading>1.219549403652435</heading>
+				<tilt>30.0012866419114</tilt>
+				<range>386.4787275501102</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ylw-pushpin70</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-92.86624843604119,58.13049708547977,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Broad River Shrub</name>
+			<LookAt>
+				<longitude>-92.93308237900744</longitude>
+				<latitude>58.13289236996128</latitude>
+				<altitude>0</altitude>
+				<heading>1.664105315519725</heading>
+				<tilt>15.22801853219176</tilt>
+				<range>13919.65931071778</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ylw-pushpin70</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-92.92585,58.12492,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Broad River Spruce Forest</name>
+			<LookAt>
+				<longitude>-92.93308237900744</longitude>
+				<latitude>58.13289236996128</latitude>
+				<altitude>0</altitude>
+				<heading>1.664105315519725</heading>
+				<tilt>15.22801853219176</tilt>
+				<range>13919.65931071778</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ylw-pushpin70</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-92.97391,58.12078,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Broad River Beachridge</name>
+			<LookAt>
+				<longitude>-92.95279816646512</longitude>
+				<latitude>58.15537073576095</latitude>
+				<altitude>0</altitude>
+				<heading>1.642979432665472</heading>
+				<tilt>9.422789070242501</tilt>
+				<range>43438.14723160741</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ylw-pushpin70</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-92.87105999999999,58.14294,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Broad River Fen</name>
+			<LookAt>
+				<longitude>-92.9159233813957</longitude>
+				<latitude>58.12459012552974</latitude>
+				<altitude>0</altitude>
+				<heading>1.680247452627722</heading>
+				<tilt>13.61293354632254</tilt>
+				<range>10124.15487799793</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ylw-pushpin70</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-92.87205000000002,58.14261,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Mary Lake Helicopter Landing</name>
+			<Camera>
+				<longitude>-92.9333592138501</longitude>
+				<latitude>58.10547664155297</latitude>
+				<altitude>19875.10406925199</altitude>
+				<heading>0.5405280553682348</heading>
+				<tilt>0.1791338688091757</tilt>
+				<roll>-1.140788997188963</roll>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</Camera>
+			<styleUrl>#m_ylw-pushpin100</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-93.39525999999999,58.40266,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Owl River Shack</name>
+			<LookAt>
+				<longitude>-92.54379345576444</longitude>
+				<latitude>57.7023968631531</latitude>
+				<altitude>0</altitude>
+				<heading>1.979071004978311</heading>
+				<tilt>0</tilt>
+				<range>148036.2464792984</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ylw-pushpin70</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-92.8064,57.82842999999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Owl River Beachridge</name>
+			<LookAt>
+				<longitude>-92.54379345576444</longitude>
+				<latitude>57.7023968631531</latitude>
+				<altitude>0</altitude>
+				<heading>1.979071004978311</heading>
+				<tilt>0</tilt>
+				<range>148036.2464792984</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ylw-pushpin70</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-92.75433,57.86799999999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Owl River Forest</name>
+			<LookAt>
+				<longitude>-92.54379345576444</longitude>
+				<latitude>57.7023968631531</latitude>
+				<altitude>0</altitude>
+				<heading>1.979071004978311</heading>
+				<tilt>0</tilt>
+				<range>148036.2464792984</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ylw-pushpin70</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-92.85138999999998,57.81788,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Owl River Sedge Fen</name>
+			<LookAt>
+				<longitude>-92.54379345576444</longitude>
+				<latitude>57.7023968631531</latitude>
+				<altitude>0</altitude>
+				<heading>1.979071004978311</heading>
+				<tilt>0</tilt>
+				<range>148036.2464792984</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ylw-pushpin70</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-92.78767000000002,57.86277,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Roberge Lake Ice Wedge</name>
+			<LookAt>
+				<longitude>-93.24200024314737</longitude>
+				<latitude>57.47799293258132</latitude>
+				<altitude>0</altitude>
+				<heading>1.585129988767162</heading>
+				<tilt>29.99935634391601</tilt>
+				<range>129.4106902020923</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin111</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-93.242435,57.477747,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Roberge Tree Island</name>
+			<LookAt>
+				<longitude>-93.24224090534214</longitude>
+				<latitude>57.47842219433708</latitude>
+				<altitude>0</altitude>
+				<heading>1.597945152556002</heading>
+				<tilt>30.00035227113158</tilt>
+				<range>222.0856315730425</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ylw-pushpin2</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-93.24273600000001,57.4782,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Roberge Lake Polygon Centre</name>
+			<LookAt>
+				<longitude>-93.24184891315794</longitude>
+				<latitude>57.47790709869525</latitude>
+				<altitude>0</altitude>
+				<heading>1.585257587709443</heading>
+				<tilt>29.99935889440616</tilt>
+				<range>129.9785831420154</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin111</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-93.242696,57.477774,0</coordinates>
+			</Point>
+		</Placemark>
+		<atom:link rel="app" href="https://www.google.com/earth/about/versions/#earth-pro" title="Google Earth Pro 7.3.6.10201"></atom:link>
+	</Folder>
+</Document>
+</kml>
