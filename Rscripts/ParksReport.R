@@ -12,6 +12,11 @@ library(scales)
 library(tidyverse)
 library(wesanderson)
 
+curr_year <- 2025
+
+# Source functions
+source("~/Desktop/Workspace/earthwatch/R_functions/R_functions.R")
+
 # Set working directory
 setwd("~/Desktop/Workspace/")
 
@@ -19,7 +24,14 @@ setwd("~/Desktop/Workspace/")
 # Microclimate ----
 
 ## Read in the data ----
-ch <- read.csv("./Earthwatch/Churchill/data/microclimate_20000101_20221010_filled.csv", header = T)[-1]
+# ch <- read_csv("./Earthwatch/Churchill/data/microclimate_20000101_20221010_filled.csv", header = T)[-1]
+microclimate <- read_latest_dated_file(
+  dir     = "./Earthwatch/Churchill/data/",
+  pattern = "^microclimate_\\d{8}_\\d{8}_filled\\.csv$",
+  drop_first_col = TRUE
+)
+
+ch <- microclimate$data
 
 ## Data wrangling ----
 ### Format date, add seasons/season_year ----
@@ -38,44 +50,51 @@ ch_temps_season <- ch %>%
                                "bwp150","ppa150","ppd150","tun150","rlk150",
                                "airp0","bsw0","tis0","wsu0","mlk0","fen0","bfr0","pfr0",
                                "bwp0","ppa0","ppd0","tun0","rlk0", # No ground surface for RLK
-                               "neg80")), ~ mean(.x, na.rm = TRUE))) %>% 
+                               "neg80")), ~ mean(.x, na.rm = TRUE)), .groups = "drop") %>%
   select(season_year, season, mlk150, mlkneg80, rlk150, rlkneg80)
 
 ### Subsets ----
 ch_temps_w <- subset(ch_temps_season, season == "warm")
 ch_temps_c <- subset(ch_temps_season, season == "cool")
-matplot(ch_temps_w[,-c(1,2)], type = "l")
-matplot(ch_temps_c[,-c(1,2)], type = "l")
+matplot(ch_temps_w[,-c(1:3)], type = "l")
+matplot(ch_temps_c[,-c(1:3)], type = "l")
 
 ch_annual <- ch %>% 
-  group_by(Year) %>% 
+  group_by(season_year) %>% 
   summarise(mean150 = mean(c(mlk150,rlk150), na.rm = T))
 
-mean2006_2021 <- ch_annual %>% 
-  filter(Year >= 2006, Year < 2022) %>% 
+mean2006_2024 <- ch_annual %>% 
+  filter(season_year >= 2006, season_year <= (!!curr_year - 1)) %>% 
   summarise(mean150 = mean(mean150, na.rm = T))
 
-ch_annual %>% 
-  filter(Year == 2021) %>% 
-  mutate(diff = mean150 - pull(mean2006_2021))
+mean_150 <- ch_annual %>% 
+  filter(season_year == !!curr_year - 1) %>% 
+  mutate(diff = mean150 - pull(mean2006_2024))
 
 ch_annual %>% 
-  ggplot(aes(x = Year, y = mean150)) + geom_line()
+  filter(season_year >= 2006) %>% 
+  ggplot(aes(x = season_year, y = mean150)) +
+  geom_line() +
+  geom_hline(
+    data = mean2006_2024,
+    aes(yintercept = mean150),
+    linetype = "dashed"
+  )
 
 ### Regressions ----
 #### Air ----
-summary(mlk150w <- lm(mlk150 ~ season_year, data = ch_temps_w[-c(1,23),]))     # ns
-summary(rlk150w <- lm(rlk150 ~ season_year, data = ch_temps_w[-c(1,23),]))     # ns
+summary(mlk150w <- lm(mlk150 ~ season_year, data = ch_temps_w[-c(1,nrow(ch_temps_w)),]))     # ns
+summary(rlk150w <- lm(rlk150 ~ season_year, data = ch_temps_w[-c(1,nrow(ch_temps_w)),]))     # ns
 
-summary(mlk150c <- lm(mlk150 ~ season_year, data = ch_temps_c[-c(1,22),]))     # ns
-summary(rlk150c <- lm(rlk150 ~ season_year, data = ch_temps_c[-c(1,22),]))     # ns
+summary(mlk150c <- lm(mlk150 ~ season_year, data = ch_temps_c[-c(1,nrow(ch_temps_c)),]))     # ns
+summary(rlk150c <- lm(rlk150 ~ season_year, data = ch_temps_c[-c(1,nrow(ch_temps_c)),]))     # ns
 
 #### Permafrost ----
-summary(mlkneg80w <- lm(mlkneg80 ~ season_year, data = ch_temps_w[-c(1,23),]))     # ns
-summary(rlkneg80w <- lm(rlkneg80 ~ season_year, data = ch_temps_w[-c(1,23),]))     # SIG
+summary(mlkneg80w <- lm(mlkneg80 ~ season_year, data = ch_temps_w[-c(1,nrow(ch_temps_w)),]))     # ns
+summary(rlkneg80w <- lm(rlkneg80 ~ season_year, data = ch_temps_w[-c(1,nrow(ch_temps_w)),]))     # 2025 SIG
 
-summary(mlkneg80c <- lm(mlkneg80 ~ season_year, data = ch_temps_c[-c(1,22),]))     # ns
-summary(rlkneg80c <- lm(rlkneg80 ~ season_year, data = ch_temps_c[-c(1,22),]))     # SIG
+summary(mlkneg80c <- lm(mlkneg80 ~ season_year, data = ch_temps_c[-c(1,nrow(ch_temps_c)),]))     # ns
+summary(rlkneg80c <- lm(rlkneg80 ~ season_year, data = ch_temps_c[-c(1,nrow(ch_temps_c)),]))     # 2025 SIG
 
 ch_temps_w %>% 
   ggplot(aes(x = season_year, y = mlk150)) + geom_line() + 
@@ -87,12 +106,12 @@ ch_temps_w %>%
 
 
 ch_temps_c %>% 
-  filter(season_year < 2022) %>% 
+  filter(season_year < !!curr_year) %>% 
   ggplot(aes(x = season_year, y = mlk150)) + geom_line() + 
   geom_line(aes(y = rlk150), color = "blue")
 
 ch_temps_c %>% 
-  filter(season_year < 2022) %>% 
+  filter(season_year < !!curr_year) %>% 
   ggplot(aes(x = season_year, y = mlkneg80)) + geom_line() + 
   geom_line(aes(y = rlkneg80), color = "blue")
 
@@ -100,7 +119,7 @@ ch_temps_c %>%
 # Snow ----
 
 ## Read in the data ----
-snow <- read.csv("~/Desktop/Workspace/Parks/data/parks_snow_2006_2023.csv")
+snow <- read_csv("~/Desktop/Workspace/Parks/data/parks_snow_2006_2023.csv")
 
 ## Data wrangling ----
 # [1] "forest"  "beach"   "fen"     "shrub"   "wedge"   "polygon" "island" 
@@ -112,7 +131,7 @@ snow %>%
 
 ### Mean depth (all years != t) ----
 snow_mean <- snow %>% 
-  filter(year != 2023) %>% 
+  filter(year != !!curr_year) %>% 
   group_by(type) %>% 
   reframe(mean = mean(depth, na.rm = T))
 
@@ -129,7 +148,7 @@ snow_mean <- snow %>%
 
 ### Mean depth (year == t) ----
 snow_2023 <- snow %>% 
-  filter(year == 2023) %>% 
+  filter(year == !!curr_year) %>% 
   group_by(type) %>% 
   reframe(mean = mean(depth, na.rm = T))
 
@@ -154,20 +173,20 @@ df_snow <- snow_mean %>%
 
 ## Stats ----
 ### Test (year == t) & control (year != t) datasets ----
-beach_tg <- snow %>% filter(type == "beach", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-beach_cg <- snow %>% filter(type == "beach", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-fen_tg <- snow %>% filter(type == "fen", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-fen_cg <- snow %>% filter(type == "fen", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-forest_tg <- snow %>% filter(type == "forest", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-forest_cg <- snow %>% filter(type == "forest", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-island_tg <- snow %>% filter(type == "island", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-island_cg <- snow %>% filter(type == "island", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-polygon_tg <- snow %>% filter(type == "polygon", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-polygon_cg <- snow %>% filter(type == "polygon", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-shrub_tg <- snow %>% filter(type == "shrub", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-shrub_cg <- snow %>% filter(type == "shrub", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-wedge_tg <- snow %>% filter(type == "wedge", year == 2023, !is.na(depth)) %>% select(depth) %>% deframe()
-wedge_cg <- snow %>% filter(type == "wedge", year != 2023, !is.na(depth)) %>% select(depth) %>% deframe()
+beach_tg <- snow %>% filter(type == "beach", year == !!curr_year, !is.na(depth)) %>% select(depth) %>% deframe()
+beach_cg <- snow %>% filter(type == "beach", year != !!curr_year, !is.na(depth)) %>% select(depth) %>% deframe()
+fen_tg <- snow %>% filter(type == "fen", year == !!curr_year, !is.na(depth)) %>% select(depth) %>% deframe()
+fen_cg <- snow %>% filter(type == "fen", year != !!curr_year, !is.na(depth)) %>% select(depth) %>% deframe()
+forest_tg <- snow %>% filter(type == "forest", year == !!curr_year, !is.na(depth)) %>% select(depth) %>% deframe()
+forest_cg <- snow %>% filter(type == "forest", year != !!curr_year, !is.na(depth)) %>% select(depth) %>% deframe()
+island_tg <- snow %>% filter(type == "island", year == !!curr_year, !is.na(depth)) %>% select(depth) %>% deframe()
+island_cg <- snow %>% filter(type == "island", year != !!curr_year, !is.na(depth)) %>% select(depth) %>% deframe()
+polygon_tg <- snow %>% filter(type == "polygon", year == !!curr_year, !is.na(depth)) %>% select(depth) %>% deframe()
+polygon_cg <- snow %>% filter(type == "polygon", year != !!curr_year, !is.na(depth)) %>% select(depth) %>% deframe()
+shrub_tg <- snow %>% filter(type == "shrub", year == !!curr_year, !is.na(depth)) %>% select(depth) %>% deframe()
+shrub_cg <- snow %>% filter(type == "shrub", year != !!curr_year, !is.na(depth)) %>% select(depth) %>% deframe()
+wedge_tg <- snow %>% filter(type == "wedge", year == !!curr_year, !is.na(depth)) %>% select(depth) %>% deframe()
+wedge_cg <- snow %>% filter(type == "wedge", year != !!curr_year, !is.na(depth)) %>% select(depth) %>% deframe()
 
 ### Variance tests ----
 var.test(beach_cg, beach_tg)      # hetero
@@ -191,7 +210,7 @@ t.test(polygon_cg, polygon_tg, var.equal = FALSE)   # t = 2.2651, df = 37.458, p
 # Needles ----
 
 ## Read in the data ----
-needles <- read.csv("~/Desktop/Workspace/Parks/data/parks_needles_2013_2020.csv")
+needles <- read_csv("~/Desktop/Workspace/Parks/data/parks_needles_2013_2020.csv")
 
 ## Data wrangling ----
 ### Subset to only parks sites ----
